@@ -1,0 +1,6 @@
+[package]
+name = "attendance_verification_I_O_operation"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]

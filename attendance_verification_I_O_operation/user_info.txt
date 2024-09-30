@@ -1,0 +1,4 @@
+Car Information:
+Make: Ford
+Model: Explorer
+Year: 2014
