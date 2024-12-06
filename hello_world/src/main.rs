@@ -1,34 +1,28 @@
-use std::rc::Rc;
+fn data_paralelism_rayon() {
 
-struct FamilyMember {
-    tv: Rc<TV>,
-}
+    use rayon::prelude::*;
 
-struct TV;
+    let mut data = vec![1, 2, 3, 4, 5];
 
-fn sharing_resource_rc_count() {
-    fn member_start_watch_tv() -> FamilyMember {
-        let tv_is_on = Rc::new(TV);
-        FamilyMember {
-            tv: Rc::clone(&tv_is_on),
-        }
-    }
+    data.par_iter_mut().for_each(|x| {
+        *x *= 2;
+    });
+    
+    // from code perspective it seems trivial, but I want you to realize how much heavy lifting happens behind the hood:
+    //The Rayon library uses work stealing to dynamically balance the workload among threads, 
+    //providing better performance compared to a static division of work among threads.
+    
+    // on top it creates a separate scope to escape need to lock data
+    
+    
+    
+    // Concept of work stealing and separate scope.
+    
+    
 
-    let dad = member_start_watch_tv();
-    println!("How many people watching {}", Rc::strong_count(&dad.tv));
-
-    let mom = FamilyMember { tv: Rc::clone(&dad.tv) };
-    println!("How many people watching {}", Rc::strong_count(&dad.tv));
-
-    let me = FamilyMember { tv: Rc::clone(&dad.tv) };
-    println!("How many people watching {}", Rc::strong_count(&me.tv));
-
-    drop(dad);
-    drop(me);
-
-    println!("How many people watching {}", Rc::strong_count(&mom.tv));
+    println!("{:?}", data); // [2, 4, 6, 8, 10]
 }
 
 fn main() {
-    sharing_resource_rc_count();
+    data_paralelism_rayon();
 }
